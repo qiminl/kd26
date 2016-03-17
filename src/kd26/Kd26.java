@@ -14,12 +14,30 @@ import java.util.Random;
  * @author liuqi
  */
 public class Kd26 {
+    
+    public static class priceNameObject{
+        String name;
+        double price;
+        public priceNameObject(String name,  double price){
+            this.price = price;
+            this.name = name;
+        }
+        public double getPrice(){
+            return price;
+        }
+        public String getName(){
+            return name;
+        }
+        
+    }
 
     private static class cam{
         String name;
+        double price;
         double[] attr;
         
-        public cam (String name, double[] attr){
+        public cam (String name, double[] attr, double price){
+            this.price = price;
             this.name = name;
             this.attr = attr;
         }
@@ -28,6 +46,14 @@ public class Kd26 {
         }
         public String getName(){
             return name;
+        }
+        public double getPrice(){
+            return price;
+        }
+        public Object getObject(){
+            Object a;
+            a = new priceNameObject(name, price);
+            return a;
         }
     }
     
@@ -39,20 +65,20 @@ public class Kd26 {
         
         ArrayList<cam> list = new ArrayList<>();
         Random rand =  new Random();;
-        for (int i =0; i<15; i++){
+        for (int i =0; i<10000; i++){
             double[] temp_array =  new double[26];
             for (int j = 0;  j<26; j++){
                 temp_array[j] = rand.nextInt((100 - 0) + 1) + 0;
             }
-            
+            double price = (rand.nextInt((100 - 0) + 1) + 0)/10;
             String name = "campaign_" + Integer.toString(i);
-            cam temp= temp = new cam(name,temp_array);
+            cam temp= temp = new cam(name,temp_array,price);
             list.add(temp);
         }
         
         KDTreeTest tree = new KDTreeTest(26);
         for (int i =0; i<list.size(); i++){
-            tree.insertToTree(list.get(i).getName(), list.get(i).getAttr());
+            tree.insertToTree(list.get(i).getObject(), list.get(i).getAttr());
         }
         
         
@@ -62,12 +88,20 @@ public class Kd26 {
         Arrays.fill(lower, 0);
         
         Object[] a = tree.range(lower, upper);
-        System.out.println("object length = " + a.length);
-        System.out.println("object string = " + a.toString());
-        for(int i = 0; i<a.length; i++){
-            System.out.println("i = " + i);
-            System.out.println( ((cam)a[i]).getName());
+        double priceMax = 0;
+        String maxPriceObj = null;
+        for (int i =0; i<a.length; i++){
+            double tampPrice = ((priceNameObject)a[i]).getPrice();
+            if( tampPrice>priceMax){
+                priceMax = tampPrice;
+                maxPriceObj = ((priceNameObject)a[i]).getName();
+            }
+          //System.out.println("object price= " + ((priceNameObject)a[i]).getPrice());
         }
+        
+        System.out.println("maxPriceObj= " + maxPriceObj);
+        //System.out.println("object length = " + a.length);
+        //System.out.println("object string = " + a.toString());
         
     }
     

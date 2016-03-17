@@ -147,8 +147,8 @@ class KDTreeTest {
 	    Object [] o = new Object[v.size()];
 	    for (int i=0; i<v.size(); ++i) {
 		KDNode n = (KDNode)v.elementAt(i);
-		o[i] = n.v;
-	    }
+		o[i] = n.v;    
+            }
 	    return o;
 	
     }
